@@ -8,6 +8,7 @@ babelify-src
 docs/_build
 .DS_Store
 .tern-port
+.cache
 TODO
 soljson.js
 *~
