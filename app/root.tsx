@@ -12,13 +12,21 @@ import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import stylesheet from "../tailwind/tailwind.css";
 
+import AuthService from "~/services/Auth.service";
+import { FetcherConfigurationProvider } from '~/providers/FetcherConfigurationContext';
+import { Fetcher } from '~/utils/fetcher';
+
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
 ];
 
 // LOADER FUNCTION
 export const loader = async ({ request }: LoaderFunctionArgs) => {
+  // If the user is already authenticated redirect to /dashboard directly
+  const user = await AuthService.isAuthenticated(request) || null;
+
   return json({
+    user: user,
     ENV_VARS: {
       API_URL: process.env.API_URL,
       MARKETPLACE_URL: process.env.MARKETPLACE_URL,
@@ -28,8 +36,12 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 // MAIN APP COMPONENT
 export default function App() {
-  const { ENV_VARS} = useLoaderData<typeof loader>();
+  const { ENV_VARS, user } = useLoaderData<typeof loader>();
 
+  //
+  const fetcher = new Fetcher(user ? user.token : null);
+    
+  //
   return (
     <html lang="es" className="h-full bg-gray-100">
       <head>
@@ -43,10 +55,12 @@ export default function App() {
         />
       </head>
       <body className="h-full">
-        <Outlet />
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
+        <FetcherConfigurationProvider fetcher={fetcher}>
+          <Outlet />
+          <ScrollRestoration />
+          <Scripts />
+          <LiveReload />
+        </FetcherConfigurationProvider>
       </body>
     </html>
   );
