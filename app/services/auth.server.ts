@@ -23,13 +23,13 @@ authenticator.use(
     new FormStrategy(async ( {form, ...request} ) => {
         // get the data from the form...
         let email = form.get('email') as string;
-        let password = form.get('password') as string;    
+        let password = form.get('password') as string;  
 
         let userData = await AuthService.loginAuthenticatorHandler({ email, password }, request)
             .catch((e) => {
                 throw new AuthorizationError(e);
             });
-        
+            
         // Return user data if login was successful
         if(userData.token) {
             return {
@@ -41,7 +41,7 @@ authenticator.use(
                 brand: userData.brand,
                 nickname: '',
                 avatar: userData.avatar,
-                token: userData.token,
+                token: userData.token
             };
         }
 

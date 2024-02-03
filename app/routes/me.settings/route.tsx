@@ -42,7 +42,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 // ACTION FUNCTION
 export const action = async ({ request }: LoaderFunctionArgs) => {
   const body = await request.formData();
-  let token = await AuthService.currentToken({request})
+  let token = await AuthService.currentToken(request)
   console.log(body, body.id)
   const loginResponse = await fetch(`${BASE_URL}/api/user/profile`, {
     method: "PUT",
