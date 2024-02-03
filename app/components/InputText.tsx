@@ -4,11 +4,11 @@ import {
 } from "@heroicons/react/24/solid";
 
 interface InputTextProps {
-    id: string;
+    id?: string;
     name: string;
     label?: string;
     placeholder?: string;
-    defaultValue?: string;
+    defaultValue?: string|number;
     required?: boolean;
     helperText?: string;
     disabled?: boolean;
@@ -40,9 +40,10 @@ export default function InputText(props:InputTextProps) {
     return (
     <div className="relative">
         <label
-            htmlFor={inputProps.id || undefined}
+            htmlFor={inputProps?.id || undefined}
             className="block text-sm font-medium leading-6 text-gray-900"
         >{label}</label>
+        
         <div className="relative mt-2">
             <input
                 {...inputProps}
@@ -60,13 +61,13 @@ export default function InputText(props:InputTextProps) {
             )}
         </div>
         {errors && (
-            <p className="mt-2 text-sm text-red-600" id="email-error">
-                Not a valid email address.
+            <p className="mt-2 text-sm text-red-600" id={label ? `${label}-error` : undefined}>
+               {errors}
             </p>
         )}
         {helperText && (
             <p className="mt-3 text-sm leading-6 text-gray-600">
-                Write a few sentences about your product.
+                {helperText}
             </p>
         )}
     </div>
